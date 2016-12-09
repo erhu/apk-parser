@@ -90,9 +90,6 @@ public class BinaryXmlParser {
         if (chunkHeader.getChunkType() == ChunkType.XML_RESOURCE_MAP) {
             long[] resourceIds = readXmlResourceMap((XmlResourceMapHeader) chunkHeader);
             resourceMap = new String[resourceIds.length];
-            for (int i = 0; i < resourceIds.length; i++) {
-                resourceMap[i] = Attribute.AttrIds.getString(resourceIds[i]);
-            }
             chunkHeader = readChunkHeader();
         }
 
@@ -111,13 +108,13 @@ public class BinaryXmlParser {
                     xmlStreamer.onNamespaceStart(namespaceStartTag);
                     break;
                 case ChunkType.XML_START_ELEMENT:
-                    XmlNodeStartTag xmlNodeStartTag = readXmlNodeStartTag();
+                    readXmlNodeStartTag();
                     break;
                 case ChunkType.XML_END_ELEMENT:
-                    XmlNodeEndTag xmlNodeEndTag = readXmlNodeEndTag();
+                    readXmlNodeEndTag();
                     break;
                 case ChunkType.XML_CDATA:
-                    XmlCData xmlCData = readXmlCData();
+                    readXmlCData();
                     break;
                 default:
                     if (chunkHeader.getChunkType() >= ChunkType.XML_FIRST_CHUNK &&
@@ -139,12 +136,6 @@ public class BinaryXmlParser {
             xmlCData.setData(stringPool.get(dataRef));
         }
         xmlCData.setTypedData(ParseUtils.readResValue(buffer, stringPool));
-        if (xmlStreamer != null) {
-            //TODO: to know more about cdata. some cdata appears buffer xml tags
-//            String value = xmlCData.toStringValue(resourceTable, locale);
-//            xmlCData.setValue(value);
-//            xmlStreamer.onCData(xmlCData);
-        }
         return xmlCData;
     }
 
@@ -329,18 +320,10 @@ public class BinaryXmlParser {
         }
     }
 
-    public Locale getLocale() {
-        return locale;
-    }
-
     public void setLocale(Locale locale) {
         if (locale != null) {
             this.locale = locale;
         }
-    }
-
-    public XmlStreamer getXmlStreamer() {
-        return xmlStreamer;
     }
 
     public void setXmlStreamer(XmlStreamer xmlStreamer) {

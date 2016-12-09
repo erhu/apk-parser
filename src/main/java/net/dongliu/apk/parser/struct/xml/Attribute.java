@@ -1,9 +1,5 @@
 package net.dongliu.apk.parser.struct.xml;
 
-import java.util.Map;
-
-import net.dongliu.apk.parser.utils.ResourceLoader;
-
 /**
  * xml node attribute
  *
@@ -56,24 +52,5 @@ public class Attribute {
                 "name='" + name + '\'' +
                 ", namespace='" + namespace + '\'' +
                 '}';
-    }
-
-    /**
-     * These are attribute resource constants for the platform; as found in android.R.attr
-     *
-     * @author dongliu
-     */
-    public static class AttrIds {
-
-        private static final Map<Integer, String> ids = ResourceLoader.loadSystemAttrIds();
-
-        public static String getString(long id) {
-            String value = ids.get((int) id);
-            if (value == null) {
-                value = "AttrId:0x" + Long.toHexString(id);
-            }
-            return value;
-        }
-
     }
 }
