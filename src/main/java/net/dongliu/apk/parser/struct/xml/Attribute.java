@@ -1,10 +1,7 @@
 package net.dongliu.apk.parser.struct.xml;
 
-import java.util.Locale;
 import java.util.Map;
 
-import net.dongliu.apk.parser.struct.ResourceValue;
-import net.dongliu.apk.parser.struct.resource.ResourceTable;
 import net.dongliu.apk.parser.utils.ResourceLoader;
 
 /**
@@ -18,20 +15,8 @@ public class Attribute {
     // The original raw string value of this 
     private String rawValue;
     // Processed typed value of this
-    private ResourceValue typedValue;
     // the final value as string
     private String value;
-
-    public String toStringValue(ResourceTable resourceTable, Locale locale) {
-        if (rawValue != null) {
-            return rawValue;
-        } else if (typedValue != null) {
-            return typedValue.toStringValue(resourceTable, locale);
-        } else {
-            // something happen;
-            return "";
-        }
-    }
 
     public String getNamespace() {
         return namespace;
@@ -55,14 +40,6 @@ public class Attribute {
 
     public void setRawValue(String rawValue) {
         this.rawValue = rawValue;
-    }
-
-    public ResourceValue getTypedValue() {
-        return typedValue;
-    }
-
-    public void setTypedValue(ResourceValue typedValue) {
-        this.typedValue = typedValue;
     }
 
     public String getValue() {

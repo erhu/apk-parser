@@ -12,10 +12,8 @@ import net.dongliu.apk.parser.bean.Locales;
 import net.dongliu.apk.parser.exception.ParserException;
 import net.dongliu.apk.parser.struct.ChunkHeader;
 import net.dongliu.apk.parser.struct.ChunkType;
-import net.dongliu.apk.parser.struct.ResourceValue;
 import net.dongliu.apk.parser.struct.StringPool;
 import net.dongliu.apk.parser.struct.StringPoolHeader;
-import net.dongliu.apk.parser.struct.resource.ResourceTable;
 import net.dongliu.apk.parser.struct.xml.Attribute;
 import net.dongliu.apk.parser.struct.xml.Attributes;
 import net.dongliu.apk.parser.struct.xml.NullHeader;
@@ -42,7 +40,6 @@ public class BinaryXmlParser {
     private static final Set<String> intAttributes = new HashSet<>(
             Arrays.asList("screenOrientation", "configChanges", "windowSoftInputMode",
                     "launchMode", "installLocation", "protectionLevel"));
-    private final ResourceTable resourceTable;
     /**
      * By default the data buffer Chunks is buffer little-endian byte order both at runtime and when stored buffer
      * files.
@@ -58,10 +55,9 @@ public class BinaryXmlParser {
      */
     private Locale locale = Locales.any;
 
-    public BinaryXmlParser(ByteBuffer buffer, ResourceTable resourceTable) {
+    public BinaryXmlParser(ByteBuffer buffer) {
         this.buffer = buffer.duplicate();
         this.buffer.order(byteOrder);
-        this.resourceTable = resourceTable;
     }
 
     /**
@@ -189,7 +185,7 @@ public class BinaryXmlParser {
         for (int count = 0; count < attributeCount; count++) {
             Attribute attribute = readAttribute();
             if (xmlStreamer != null) {
-                String value = attribute.toStringValue(resourceTable, locale);
+                String value = attribute.getRawValue();
                 if (intAttributes.contains(attribute.getName()) && Utils.isNumeric(value)) {
                     try {
                         value = getFinalValueAsString(attribute.getName(), value);
@@ -249,8 +245,7 @@ public class BinaryXmlParser {
         if (rawValueRef > 0) {
             attribute.setRawValue(stringPool.get(rawValueRef));
         }
-        ResourceValue resValue = ParseUtils.readResValue(buffer, stringPool);
-        attribute.setTypedValue(resValue);
+        ParseUtils.readResValue(buffer, stringPool);
 
         return attribute;
     }

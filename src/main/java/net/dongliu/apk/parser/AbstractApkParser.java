@@ -8,11 +8,9 @@ import java.util.Objects;
 
 import net.dongliu.apk.parser.exception.ParserException;
 import net.dongliu.apk.parser.parser.BinaryXmlParser;
-import net.dongliu.apk.parser.parser.ResourceTableParser;
 import net.dongliu.apk.parser.parser.XmlStreamer;
 import net.dongliu.apk.parser.parser.XmlTranslator;
 import net.dongliu.apk.parser.struct.AndroidConstants;
-import net.dongliu.apk.parser.struct.resource.ResourceTable;
 
 /**
  * Common Apk Parser methods.
@@ -23,7 +21,6 @@ import net.dongliu.apk.parser.struct.resource.ResourceTable;
 public abstract class AbstractApkParser implements Closeable {
 
     private static final Locale DEFAULT_LOCALE = Locale.US;
-    private ResourceTable resourceTable;
     private String manifestXml;
     private Locale preferredLocale = DEFAULT_LOCALE;
 
@@ -59,39 +56,15 @@ public abstract class AbstractApkParser implements Closeable {
     public abstract byte[] getFileData(String path) throws IOException;
 
     private void transBinaryXml(byte[] data, XmlStreamer xmlStreamer) throws IOException {
-        if (this.resourceTable == null) {
-            parseResourceTable();
-        }
-
         ByteBuffer buffer = ByteBuffer.wrap(data);
-        BinaryXmlParser binaryXmlParser = new BinaryXmlParser(buffer, resourceTable);
+        BinaryXmlParser binaryXmlParser = new BinaryXmlParser(buffer);
         binaryXmlParser.setLocale(preferredLocale);
         binaryXmlParser.setXmlStreamer(xmlStreamer);
         binaryXmlParser.parse();
     }
 
-    /**
-     * parse resource table.
-     */
-    private void parseResourceTable() throws IOException {
-        byte[] data = getFileData(AndroidConstants.RESOURCE_FILE);
-        if (data == null) {
-            // if no resource entry has been found, we assume it is not needed by this APK
-            this.resourceTable = new ResourceTable();
-            return;
-        }
-
-        this.resourceTable = new ResourceTable();
-
-        ByteBuffer buffer = ByteBuffer.wrap(data);
-        ResourceTableParser resourceTableParser = new ResourceTableParser(buffer);
-        resourceTableParser.parse();
-        this.resourceTable = resourceTableParser.getResourceTable();
-    }
-
     @Override
     public void close() throws IOException {
-        this.resourceTable = null;
     }
 
     /**
