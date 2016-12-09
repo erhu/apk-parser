@@ -2,9 +2,6 @@ package net.dongliu.apk.parser.parser;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import net.dongliu.apk.parser.exception.ParserException;
 import net.dongliu.apk.parser.struct.ChunkHeader;
@@ -14,7 +11,6 @@ import net.dongliu.apk.parser.struct.StringPoolHeader;
 import net.dongliu.apk.parser.struct.xml.Attribute;
 import net.dongliu.apk.parser.struct.xml.Attributes;
 import net.dongliu.apk.parser.struct.xml.NullHeader;
-import net.dongliu.apk.parser.struct.xml.XmlCData;
 import net.dongliu.apk.parser.struct.xml.XmlHeader;
 import net.dongliu.apk.parser.struct.xml.XmlNamespaceEndTag;
 import net.dongliu.apk.parser.struct.xml.XmlNamespaceStartTag;
@@ -33,9 +29,6 @@ import net.dongliu.apk.parser.utils.ParseUtils;
  */
 public class BinaryXmlParser {
 
-    private static final Set<String> intAttributes = new HashSet<>(
-            Arrays.asList("screenOrientation", "configChanges", "windowSoftInputMode",
-                    "launchMode", "installLocation", "protectionLevel"));
     /**
      * By default the data buffer Chunks is buffer little-endian byte order both at runtime and when stored buffer
      * files.
@@ -106,7 +99,6 @@ public class BinaryXmlParser {
                     readXmlNodeEndTag();
                     break;
                 case ChunkType.XML_CDATA:
-                    readXmlCData();
                     break;
                 default:
                     if (chunkHeader.getChunkType() >= ChunkType.XML_FIRST_CHUNK &&
@@ -119,16 +111,6 @@ public class BinaryXmlParser {
             buffer.position((int) (beginPos + chunkHeader.getBodySize()));
             chunkHeader = readChunkHeader();
         }
-    }
-
-    private XmlCData readXmlCData() {
-        XmlCData xmlCData = new XmlCData();
-        int dataRef = buffer.getInt();
-        if (dataRef > 0) {
-            xmlCData.setData(stringPool.get(dataRef));
-        }
-        xmlCData.setTypedData(ParseUtils.readResValue(buffer, stringPool));
-        return xmlCData;
     }
 
     private XmlNodeEndTag readXmlNodeEndTag() {

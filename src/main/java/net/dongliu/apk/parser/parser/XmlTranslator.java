@@ -3,7 +3,6 @@ package net.dongliu.apk.parser.parser;
 import java.util.List;
 
 import net.dongliu.apk.parser.struct.xml.Attribute;
-import net.dongliu.apk.parser.struct.xml.XmlCData;
 import net.dongliu.apk.parser.struct.xml.XmlNamespaceEndTag;
 import net.dongliu.apk.parser.struct.xml.XmlNamespaceStartTag;
 import net.dongliu.apk.parser.struct.xml.XmlNodeEndTag;
@@ -87,14 +86,6 @@ public class XmlTranslator implements XmlStreamer {
             sb.append(xmlNodeEndTag.getName());
             sb.append(">\n");
         }
-        isLastStartTag = false;
-    }
-
-
-    @Override
-    public void onCData(XmlCData xmlCData) {
-        appendShift(shift);
-        sb.append(xmlCData.getValue()).append('\n');
         isLastStartTag = false;
     }
 

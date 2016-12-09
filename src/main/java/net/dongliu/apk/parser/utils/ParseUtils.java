@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 
 import net.dongliu.apk.parser.exception.ParserException;
 import net.dongliu.apk.parser.parser.StringPoolEntry;
-import net.dongliu.apk.parser.struct.ResValue;
 import net.dongliu.apk.parser.struct.ResourceValue;
 import net.dongliu.apk.parser.struct.StringPool;
 import net.dongliu.apk.parser.struct.StringPoolHeader;
@@ -139,18 +138,7 @@ public class ParseUtils {
         int size = Buffers.readUShort(buffer);
         short res0 = Buffers.readUByte(buffer);
         short dataType = Buffers.readUByte(buffer);
-
-        switch (dataType) {
-            case ResValue.ResType.STRING:
-                int strRef = buffer.getInt();
-                if (strRef >= 0) {
-                    return ResourceValue.string(strRef, stringPool);
-                } else {
-                    return null;
-                }
-            default:
-                return ResourceValue.raw(buffer.getInt(), dataType);
-        }
+        return ResourceValue.raw(buffer.getInt(), dataType);
     }
 
     public static void checkChunkType(int expected, int real) {
