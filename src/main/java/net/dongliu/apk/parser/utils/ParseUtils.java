@@ -43,20 +43,6 @@ public class ParseUtils {
     }
 
     /**
-     * read utf-16 encoding str, use zero char to end str.
-     */
-    public static String readStringUTF16(ByteBuffer buffer, int strLen) {
-        String str = Buffers.readString(buffer, strLen);
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (c == 0) {
-                return str.substring(0, i);
-            }
-        }
-        return str;
-    }
-
-    /**
      * read encoding len.
      * see StringPool.cpp ENCODE_LENGTH
      */
