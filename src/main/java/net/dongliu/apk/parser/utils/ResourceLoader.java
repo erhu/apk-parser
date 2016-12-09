@@ -12,8 +12,6 @@ import java.util.Map;
  * @author dongliu
  */
 public class ResourceLoader {
-
-
     /**
      * load system attr ids for parse binary xml.
      */
