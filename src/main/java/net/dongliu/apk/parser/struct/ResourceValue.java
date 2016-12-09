@@ -1,10 +1,5 @@
 package net.dongliu.apk.parser.struct;
 
-import java.util.Locale;
-
-import net.dongliu.apk.parser.struct.resource.ResourceTable;
-import net.dongliu.apk.parser.utils.ParseUtils;
-
 /**
  * Resource entity, may be one entry in resource table, or string value
  * A apk only has one resource table.
@@ -18,86 +13,15 @@ public abstract class ResourceValue {
         this.value = value;
     }
 
-    public static ResourceValue decimal(int value) {
-        return new DecimalResourceValue(value);
-    }
-
-    public static ResourceValue hexadecimal(int value) {
-        return new HexadecimalResourceValue(value);
-    }
-
-    public static ResourceValue bool(int value) {
-        return new BooleanResourceValue(value);
-    }
-
     public static ResourceValue string(int value, StringPool stringPool) {
         return new StringResourceValue(value, stringPool);
-    }
-
-    public static ResourceValue reference(int value) {
-        return new ReferenceResourceValue(value);
-    }
-
-    public static ResourceValue nullValue() {
-        return NullResourceValue.instance;
-    }
-
-    public static ResourceValue rgb(int value, int len) {
-        return new RGBResourceValue(value, len);
-    }
-
-    public static ResourceValue dimension(int value) {
-        return new DimensionValue(value);
-    }
-
-    public static ResourceValue fraction(int value) {
-        return new FractionValue(value);
     }
 
     public static ResourceValue raw(int value, short type) {
         return new RawValue(value, type);
     }
 
-    /**
-     * get value as string
-     */
-    public abstract String toStringValue(ResourceTable resourceTable, Locale locale);
-
-    private static class DecimalResourceValue extends ResourceValue {
-
-        private DecimalResourceValue(int value) {
-            super(value);
-        }
-
-        @Override
-        public String toStringValue(ResourceTable resourceTable, Locale locale) {
-            return String.valueOf(value);
-        }
-    }
-
-    private static class HexadecimalResourceValue extends ResourceValue {
-
-        private HexadecimalResourceValue(int value) {
-            super(value);
-        }
-
-        @Override
-        public String toStringValue(ResourceTable resourceTable, Locale locale) {
-            return "0x" + Integer.toHexString(value);
-        }
-    }
-
-    private static class BooleanResourceValue extends ResourceValue {
-
-        private BooleanResourceValue(int value) {
-            super(value);
-        }
-
-        @Override
-        public String toStringValue(ResourceTable resourceTable, Locale locale) {
-            return String.valueOf(value == 1);
-        }
-    }
+    public abstract String toStringValue();
 
     private static class StringResourceValue extends ResourceValue {
         private final StringPool stringPool;
@@ -108,123 +32,12 @@ public abstract class ResourceValue {
         }
 
         @Override
-        public String toStringValue(ResourceTable resourceTable, Locale locale) {
+        public String toStringValue() {
             if (value >= 0) {
                 return stringPool.get(value);
             } else {
                 return null;
             }
-        }
-    }
-
-    // make public for cyclic reference detect
-    public static class ReferenceResourceValue extends ResourceValue {
-
-        private ReferenceResourceValue(int value) {
-            super(value);
-        }
-
-        @Override
-        public String toStringValue(ResourceTable resourceTable, Locale locale) {
-            long resourceId = getReferenceResourceId();
-            return ParseUtils.getResourceById(resourceId, resourceTable, locale);
-        }
-
-        public long getReferenceResourceId() {
-            return value & 0xFFFFFFFFL;
-        }
-    }
-
-    private static class NullResourceValue extends ResourceValue {
-        private static final NullResourceValue instance = new NullResourceValue();
-
-        private NullResourceValue() {
-            super(-1);
-        }
-
-        @Override
-        public String toStringValue(ResourceTable resourceTable, Locale locale) {
-            return "";
-        }
-    }
-
-    private static class RGBResourceValue extends ResourceValue {
-        private final int len;
-
-        private RGBResourceValue(int value, int len) {
-            super(value);
-            this.len = len;
-        }
-
-        @Override
-        public String toStringValue(ResourceTable resourceTable, Locale locale) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = len / 2 - 1; i >= 0; i--) {
-                sb.append(Integer.toHexString((value >> i * 8) & 0xff));
-            }
-            return sb.toString();
-        }
-    }
-
-    private static class DimensionValue extends ResourceValue {
-
-        private DimensionValue(int value) {
-            super(value);
-        }
-
-        @Override
-        public String toStringValue(ResourceTable resourceTable, Locale locale) {
-            short unit = (short) (value & 0xff);
-            String unitStr;
-            switch (unit) {
-                case ResValue.ResDataCOMPLEX.UNIT_MM:
-                    unitStr = "mm";
-                    break;
-                case ResValue.ResDataCOMPLEX.UNIT_PX:
-                    unitStr = "px";
-                    break;
-                case ResValue.ResDataCOMPLEX.UNIT_DIP:
-                    unitStr = "dp";
-                    break;
-                case ResValue.ResDataCOMPLEX.UNIT_SP:
-                    unitStr = "sp";
-                    break;
-                case ResValue.ResDataCOMPLEX.UNIT_PT:
-                    unitStr = "pt";
-                    break;
-                case ResValue.ResDataCOMPLEX.UNIT_IN:
-                    unitStr = "in";
-                    break;
-                default:
-                    unitStr = "unknown unit:0x" + Integer.toHexString(unit);
-            }
-            return (value >> 8) + unitStr;
-        }
-    }
-
-    private static class FractionValue extends ResourceValue {
-
-        private FractionValue(int value) {
-            super(value);
-        }
-
-        @Override
-        public String toStringValue(ResourceTable resourceTable, Locale locale) {
-            // The low-order 4 bits of the data value specify the type of the fraction
-            short type = (short) (value & 0xf);
-            String pstr;
-            switch (type) {
-                case ResValue.ResDataCOMPLEX.UNIT_FRACTION:
-                    pstr = "%";
-                    break;
-                case ResValue.ResDataCOMPLEX.UNIT_FRACTION_PARENT:
-                    pstr = "%p";
-                    break;
-                default:
-                    pstr = "unknown type:0x" + Integer.toHexString(type);
-            }
-            float f = Float.intBitsToFloat(value >> 4);
-            return f + pstr;
         }
     }
 
@@ -237,7 +50,7 @@ public abstract class ResourceValue {
         }
 
         @Override
-        public String toStringValue(ResourceTable resourceTable, Locale locale) {
+        public String toStringValue() {
             return "{" + dataType + ":" + (value & 0xFFFFFFFFL) + "}";
         }
     }

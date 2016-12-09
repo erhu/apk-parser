@@ -1,6 +1,5 @@
 package net.dongliu.apk.parser.struct.resource;
 
-import java.util.Locale;
 import javax.annotation.Nullable;
 
 import net.dongliu.apk.parser.struct.ResourceValue;
@@ -30,19 +29,6 @@ public class ResourceEntry {
 
     // the resvalue following this resource entry.
     private ResourceValue value;
-
-    /**
-     * get value as string
-     *
-     * @return
-     */
-    public String toStringValue(ResourceTable resourceTable, Locale locale) {
-        if (value != null) {
-            return value.toStringValue(resourceTable, locale);
-        } else {
-            return "null";
-        }
-    }
 
     public int getSize() {
         return size;

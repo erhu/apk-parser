@@ -1,9 +1,6 @@
 package net.dongliu.apk.parser.struct.xml;
 
-import java.util.Locale;
-
 import net.dongliu.apk.parser.struct.ResourceValue;
-import net.dongliu.apk.parser.struct.resource.ResourceTable;
 
 /**
  * @author dongliu
@@ -21,19 +18,6 @@ public class XmlCData {
 
     // the final value as string
     private String value;
-
-    /**
-     * get value as string
-     *
-     * @return
-     */
-    public String toStringValue(ResourceTable resourceTable, Locale locale) {
-        if (data != null) {
-            return CDATA_START + data + CDATA_END;
-        } else {
-            return CDATA_START + typedData.toStringValue(resourceTable, locale) + CDATA_END;
-        }
-    }
 
     public String getData() {
         return data;

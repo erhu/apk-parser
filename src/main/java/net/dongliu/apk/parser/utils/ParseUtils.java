@@ -2,23 +2,14 @@ package net.dongliu.apk.parser.utils;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Locale;
 import javax.annotation.Nullable;
 
-import net.dongliu.apk.parser.bean.Locales;
 import net.dongliu.apk.parser.exception.ParserException;
 import net.dongliu.apk.parser.parser.StringPoolEntry;
-import net.dongliu.apk.parser.struct.AndroidConstants;
 import net.dongliu.apk.parser.struct.ResValue;
 import net.dongliu.apk.parser.struct.ResourceValue;
 import net.dongliu.apk.parser.struct.StringPool;
 import net.dongliu.apk.parser.struct.StringPoolHeader;
-import net.dongliu.apk.parser.struct.resource.ResourceEntry;
-import net.dongliu.apk.parser.struct.resource.ResourcePackage;
-import net.dongliu.apk.parser.struct.resource.ResourceTable;
-import net.dongliu.apk.parser.struct.resource.Type;
-import net.dongliu.apk.parser.struct.resource.TypeSpec;
 
 /**
  * @author dongliu
@@ -164,10 +155,6 @@ public class ParseUtils {
         short dataType = Buffers.readUByte(buffer);
 
         switch (dataType) {
-            case ResValue.ResType.INT_DEC:
-                return ResourceValue.decimal(buffer.getInt());
-            case ResValue.ResType.INT_HEX:
-                return ResourceValue.hexadecimal(buffer.getInt());
             case ResValue.ResType.STRING:
                 int strRef = buffer.getInt();
                 if (strRef >= 0) {
@@ -175,22 +162,6 @@ public class ParseUtils {
                 } else {
                     return null;
                 }
-            case ResValue.ResType.REFERENCE:
-                return ResourceValue.reference(buffer.getInt());
-            case ResValue.ResType.INT_BOOLEAN:
-                return ResourceValue.bool(buffer.getInt());
-            case ResValue.ResType.NULL:
-                return ResourceValue.nullValue();
-            case ResValue.ResType.INT_COLOR_RGB8:
-            case ResValue.ResType.INT_COLOR_RGB4:
-                return ResourceValue.rgb(buffer.getInt(), 6);
-            case ResValue.ResType.INT_COLOR_ARGB8:
-            case ResValue.ResType.INT_COLOR_ARGB4:
-                return ResourceValue.rgb(buffer.getInt(), 8);
-            case ResValue.ResType.DIMENSION:
-                return ResourceValue.dimension(buffer.getInt());
-            case ResValue.ResType.FRACTION:
-                return ResourceValue.fraction(buffer.getInt());
             default:
                 return ResourceValue.raw(buffer.getInt(), dataType);
         }
@@ -202,82 +173,4 @@ public class ParseUtils {
                     + ", but got:" + Integer.toHexString(real));
         }
     }
-
-    /**
-     * get resource value by string-format via resourceId.
-     */
-    public static String getResourceById(long resourceId, ResourceTable resourceTable, Locale locale) {
-//        An Android Resource id is a 32-bit integer. It comprises
-//        an 8-bit Package id [bits 24-31]
-//        an 8-bit Type id [bits 16-23]
-//        a 16-bit Entry index [bits 0-15]
-
-        // android system styles.
-        if (resourceId > AndroidConstants.SYS_STYLE_ID_START && resourceId < AndroidConstants.SYS_STYLE_ID_END) {
-            return "@android:style/" + ResourceTable.sysStyle.get((int) resourceId);
-        }
-
-        String str = "resourceId:0x" + Long.toHexString(resourceId);
-        if (resourceTable == null) {
-            return str;
-        }
-
-        short packageId = (short) (resourceId >> 24 & 0xff);
-        short typeId = (short) ((resourceId >> 16) & 0xff);
-        int entryIndex = (int) (resourceId & 0xffff);
-        ResourcePackage resourcePackage = resourceTable.getPackage(packageId);
-        if (resourcePackage == null) {
-            return str;
-        }
-        TypeSpec typeSpec = resourcePackage.getTypeSpec(typeId);
-        List<Type> types = resourcePackage.getTypes(typeId);
-        if (typeSpec == null || types == null) {
-            return str;
-        }
-        if (!typeSpec.exists(entryIndex)) {
-            return str;
-        }
-
-        // read from type resource
-        ResourceEntry resource = null;
-        String ref = null;
-        int currentLevel = -1;
-        for (Type type : types) {
-            ResourceEntry curResourceEntry = type.getResourceEntry(entryIndex);
-            if (curResourceEntry == null) {
-                continue;
-            }
-            ref = curResourceEntry.getKey();
-
-            ResourceValue currentResourceValue = curResourceEntry.getValue();
-            if (currentResourceValue == null) {
-                continue;
-            }
-
-            // cyclic reference detect
-            if (currentResourceValue instanceof ResourceValue.ReferenceResourceValue) {
-                if (resourceId == ((ResourceValue.ReferenceResourceValue) currentResourceValue)
-                        .getReferenceResourceId()) {
-                    continue;
-                }
-            }
-
-            int level = Locales.match(locale, type.getLocale());
-            if (level == 2) {
-                resource = curResourceEntry;
-                break;
-            } else if (level > currentLevel) {
-                resource = curResourceEntry;
-                currentLevel = level;
-            }
-        }
-        String result;
-        if (locale == null || resource == null) {
-            result = "@" + typeSpec.getName() + "/" + ref;
-        } else {
-            result = resource.toStringValue(resourceTable, locale);
-        }
-        return result;
-    }
-
 }

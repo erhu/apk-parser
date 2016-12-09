@@ -1,7 +1,6 @@
 package net.dongliu.apk.parser.struct.resource;
 
 import java.util.Arrays;
-import java.util.Locale;
 
 /**
  * @author dongliu.
@@ -39,25 +38,8 @@ public class ResourceMapEntry extends ResourceEntry {
         this.count = count;
     }
 
-    public ResourceTableMap[] getResourceTableMaps() {
-        return resourceTableMaps;
-    }
-
     public void setResourceTableMaps(ResourceTableMap[] resourceTableMaps) {
         this.resourceTableMaps = resourceTableMaps;
-    }
-
-    /**
-     * get value as string
-     *
-     * @return
-     */
-    public String toStringValue(ResourceTable resourceTable, Locale locale) {
-        if (resourceTableMaps.length > 0) {
-            return resourceTableMaps[0].toString();
-        } else {
-            return null;
-        }
     }
 
     @Override
