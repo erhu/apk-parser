@@ -1,4 +1,4 @@
-package net.dongliu.apk.parser.utils;
+package cn.erhu.test.android.apk.parser;
 
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
