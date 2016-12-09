@@ -1,7 +1,6 @@
 package net.dongliu.apk.parser.utils;
 
 import java.io.IOException;
-import java.util.Locale;
 import javax.xml.parsers.ParserConfigurationException;
 
 import net.dongliu.apk.parser.ApkParser;
@@ -40,7 +39,6 @@ public class Main {
 
         try {
             parser = new ApkParser(apkFile);
-            parser.setPreferredLocale(Locale.getDefault());
             System.out.println(parser.getManifestXml());
         } catch (Throwable t) {
             t.printStackTrace();

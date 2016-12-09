@@ -4,11 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
-import net.dongliu.apk.parser.bean.AttributeValues;
-import net.dongliu.apk.parser.bean.Locales;
 import net.dongliu.apk.parser.exception.ParserException;
 import net.dongliu.apk.parser.struct.ChunkHeader;
 import net.dongliu.apk.parser.struct.ChunkType;
@@ -27,7 +24,6 @@ import net.dongliu.apk.parser.struct.xml.XmlNodeStartTag;
 import net.dongliu.apk.parser.struct.xml.XmlResourceMapHeader;
 import net.dongliu.apk.parser.utils.Buffers;
 import net.dongliu.apk.parser.utils.ParseUtils;
-import net.dongliu.apk.parser.utils.Utils;
 
 /**
  * Android Binary XML format
@@ -50,10 +46,6 @@ public class BinaryXmlParser {
     private String[] resourceMap;
     private ByteBuffer buffer;
     private XmlStreamer xmlStreamer;
-    /**
-     * default locale.
-     */
-    private Locale locale = Locales.any;
 
     public BinaryXmlParser(ByteBuffer buffer) {
         this.buffer = buffer.duplicate();
@@ -177,12 +169,6 @@ public class BinaryXmlParser {
             Attribute attribute = readAttribute();
             if (xmlStreamer != null) {
                 String value = attribute.getRawValue();
-                if (intAttributes.contains(attribute.getName()) && Utils.isNumeric(value)) {
-                    try {
-                        value = getFinalValueAsString(attribute.getName(), value);
-                    } catch (Exception ignore) {
-                    }
-                }
                 attribute.setValue(value);
                 attributes.set(count, attribute);
             }
@@ -194,27 +180,6 @@ public class BinaryXmlParser {
         }
 
         return xmlNodeStartTag;
-    }
-
-    //trans int attr value to string
-    private String getFinalValueAsString(String attributeName, String str) {
-        int value = Integer.parseInt(str);
-        switch (attributeName) {
-            case "screenOrientation":
-                return AttributeValues.getScreenOrientation(value);
-            case "configChanges":
-                return AttributeValues.getConfigChanges(value);
-            case "windowSoftInputMode":
-                return AttributeValues.getWindowSoftInputMode(value);
-            case "launchMode":
-                return AttributeValues.getLaunchMode(value);
-            case "installLocation":
-                return AttributeValues.getInstallLocation(value);
-            case "protectionLevel":
-                return AttributeValues.getProtectionLevel(value);
-            default:
-                return str;
-        }
     }
 
     private Attribute readAttribute() {
@@ -276,7 +241,6 @@ public class BinaryXmlParser {
         return resourceIds;
     }
 
-
     private ChunkHeader readChunkHeader() {
         // finished
         if (!buffer.hasRemaining()) {
@@ -317,12 +281,6 @@ public class BinaryXmlParser {
                 return new NullHeader(chunkType, headerSize, chunkSize);
             default:
                 throw new ParserException("Unexpected chunk type:" + chunkType);
-        }
-    }
-
-    public void setLocale(Locale locale) {
-        if (locale != null) {
-            this.locale = locale;
         }
     }
 
