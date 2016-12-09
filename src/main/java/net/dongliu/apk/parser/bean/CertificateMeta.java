@@ -19,7 +19,7 @@ public class CertificateMeta {
      * An OID is represented by a set of non-negative whole numbers separated by periods.
      * For example, the string "1.2.840.10040.4.3" identifies the SHA-1 with DSA signature algorithm defined in
      * <a href="http://www.ietf.org/rfc/rfc3279.txt">
-     *     RFC 3279: Algorithms and Identifiers for the Internet X.509 Public Key Infrastructure Certificate and CRL Profile
+     * RFC 3279: Algorithms and Identifiers for the Internet X.509 Public Key Infrastructure Certificate and CRL Profile
      * </a>.
      */
     private String signAlgorithmOID;

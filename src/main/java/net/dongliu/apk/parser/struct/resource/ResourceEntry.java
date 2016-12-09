@@ -1,9 +1,9 @@
 package net.dongliu.apk.parser.struct.resource;
 
-import net.dongliu.apk.parser.struct.ResourceValue;
-
-import javax.annotation.Nullable;
 import java.util.Locale;
+import javax.annotation.Nullable;
+
+import net.dongliu.apk.parser.struct.ResourceValue;
 
 /**
  * A Resource entry specifies the key (name) of the Resource.
@@ -12,15 +12,14 @@ import java.util.Locale;
  * @author dongliu
  */
 public class ResourceEntry {
-    // Number of bytes in this structure. uint16_t
-    private int size;
-
     // If set, this is a complex entry, holding a set of name/value
     // mappings.  It is followed by an array of ResTable_map structures.
     public static final int FLAG_COMPLEX = 0x0001;
     // If set, this resource has been declared public, so libraries
     // are allowed to reference it.
     public static final int FLAG_PUBLIC = 0x0002;
+    // Number of bytes in this structure. uint16_t
+    private int size;
     // uint16_t
     private int flags;
 

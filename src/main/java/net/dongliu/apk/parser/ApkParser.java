@@ -1,23 +1,17 @@
 package net.dongliu.apk.parser;
 
-import net.dongliu.apk.parser.bean.*;
-import net.dongliu.apk.parser.exception.ParserException;
-import net.dongliu.apk.parser.parser.*;
-import net.dongliu.apk.parser.struct.AndroidConstants;
-import net.dongliu.apk.parser.struct.resource.ResourceTable;
-import net.dongliu.apk.parser.utils.Utils;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.security.cert.CertificateException;
-import java.util.*;
+import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import net.dongliu.apk.parser.bean.ApkSignStatus;
+import net.dongliu.apk.parser.utils.Utils;
 
 
 /**

@@ -22,29 +22,40 @@ import java.io.Writer;
 import java.util.Locale;
 
 /**
- * An API for translating text. 
- * Its core use is to escape and unescape text. Because escaping and unescaping 
+ * An API for translating text.
+ * Its core use is to escape and unescape text. Because escaping and unescaping
  * is completely contextual, the API does not present two separate signatures.
- *
  */
 abstract class CharSequenceTranslator {
 
     /**
-     * Translate a set of codepoints, represented by an int index into a CharSequence, 
-     * into another set of codepoints. The number of codepoints consumed must be returned, 
-     * and the only IOExceptions thrown must be from interacting with the Writer so that 
-     * the top level API may reliably ignore StringWriter IOExceptions. 
+     * <p>Returns an upper case hexadecimal <code>String</code> for the given
+     * character.</p>
+     *
+     * @param codepoint The codepoint to convert.
+     * @return An upper case hexadecimal <code>String</code>
+     */
+    public static String hex(final int codepoint) {
+        return Integer.toHexString(codepoint).toUpperCase(Locale.ENGLISH);
+    }
+
+    /**
+     * Translate a set of codepoints, represented by an int index into a CharSequence,
+     * into another set of codepoints. The number of codepoints consumed must be returned,
+     * and the only IOExceptions thrown must be from interacting with the Writer so that
+     * the top level API may reliably ignore StringWriter IOExceptions.
      *
      * @param input CharSequence that is being translated
      * @param index int representing the current point of translation
-     * @param out Writer to translate the text to
+     * @param out   Writer to translate the text to
      * @return int count of codepoints consumed
      * @throws IOException if and only if the Writer produces an IOException
      */
     public abstract int translate(CharSequence input, int index, Writer out) throws IOException;
 
     /**
-     * Helper for non-Writer usage. 
+     * Helper for non-Writer usage.
+     *
      * @param input CharSequence to be translated
      * @return String output of translation
      */
@@ -63,11 +74,11 @@ abstract class CharSequenceTranslator {
     }
 
     /**
-     * Translate an input onto a Writer. This is intentionally final as its algorithm is 
-     * tightly coupled with the abstract method of this class. 
+     * Translate an input onto a Writer. This is intentionally final as its algorithm is
+     * tightly coupled with the abstract method of this class.
      *
      * @param input CharSequence that is being translated
-     * @param out Writer to translate the text to
+     * @param out   Writer to translate the text to
      * @throws IOException if and only if the Writer produces an IOException
      */
     public final void translate(final CharSequence input, final Writer out) throws IOException {
@@ -84,7 +95,7 @@ abstract class CharSequenceTranslator {
             if (consumed == 0) {
                 final char[] c = Character.toChars(Character.codePointAt(input, pos));
                 out.write(c);
-                pos+= c.length;
+                pos += c.length;
                 continue;
             }
             // contract with translators is that they have to understand codepoints
@@ -96,7 +107,7 @@ abstract class CharSequenceTranslator {
     }
 
     /**
-     * Helper method to create a merger of this translator with another set of 
+     * Helper method to create a merger of this translator with another set of
      * translators. Useful in customizing the standard functionality.
      *
      * @param translators CharSequenceTranslator array of translators to merge with this one
@@ -107,17 +118,6 @@ abstract class CharSequenceTranslator {
         newArray[0] = this;
         System.arraycopy(translators, 0, newArray, 1, translators.length);
         return new AggregateTranslator(newArray);
-    }
-
-    /**
-     * <p>Returns an upper case hexadecimal <code>String</code> for the given
-     * character.</p>
-     *
-     * @param codepoint The codepoint to convert.
-     * @return An upper case hexadecimal <code>String</code>
-     */
-    public static String hex(final int codepoint) {
-        return Integer.toHexString(codepoint).toUpperCase(Locale.ENGLISH);
     }
 
 }

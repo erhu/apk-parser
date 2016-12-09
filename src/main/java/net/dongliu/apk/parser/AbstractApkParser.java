@@ -1,16 +1,31 @@
 package net.dongliu.apk.parser;
 
-import net.dongliu.apk.parser.bean.*;
-import net.dongliu.apk.parser.exception.ParserException;
-import net.dongliu.apk.parser.parser.*;
-import net.dongliu.apk.parser.struct.AndroidConstants;
-import net.dongliu.apk.parser.struct.resource.ResourceTable;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.cert.CertificateException;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+
+import net.dongliu.apk.parser.bean.ApkMeta;
+import net.dongliu.apk.parser.bean.ApkSignStatus;
+import net.dongliu.apk.parser.bean.CertificateMeta;
+import net.dongliu.apk.parser.bean.DexClass;
+import net.dongliu.apk.parser.bean.Icon;
+import net.dongliu.apk.parser.exception.ParserException;
+import net.dongliu.apk.parser.parser.ApkMetaTranslator;
+import net.dongliu.apk.parser.parser.BinaryXmlParser;
+import net.dongliu.apk.parser.parser.CertificateParser;
+import net.dongliu.apk.parser.parser.CompositeXmlStreamer;
+import net.dongliu.apk.parser.parser.DexParser;
+import net.dongliu.apk.parser.parser.ResourceTableParser;
+import net.dongliu.apk.parser.parser.XmlStreamer;
+import net.dongliu.apk.parser.parser.XmlTranslator;
+import net.dongliu.apk.parser.struct.AndroidConstants;
+import net.dongliu.apk.parser.struct.resource.ResourceTable;
 
 /**
  * Common Apk Parser methods.
@@ -19,16 +34,13 @@ import java.util.*;
  * @author Liu Dong
  */
 public abstract class AbstractApkParser implements Closeable {
+    private static final Locale DEFAULT_LOCALE = Locale.US;
     private DexClass[] dexClasses;
     private ResourceTable resourceTable;
-
     private String manifestXml;
     private ApkMeta apkMeta;
     private Set<Locale> locales;
     private List<CertificateMeta> certificateMetaList;
-
-    private static final Locale DEFAULT_LOCALE = Locale.US;
-
     /**
      * default use empty locale
      */

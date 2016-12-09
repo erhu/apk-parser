@@ -4,25 +4,6 @@ package net.dongliu.apk.parser.struct.dex;
  * @author dongliu
  */
 public class DexClassStruct {
-    /* index into typeIds for this class. u4 */
-    private int classIdx;
-
-    private int accessFlags;
-    /* index into typeIds for superclass. u4 */
-    private int superclassIdx;
-
-    /* file offset to DexTypeList. u4 */
-    private long interfacesOff;
-
-    /* index into stringIds for source file name. u4 */
-    private int sourceFileIdx;
-    /* file offset to annotations_directory_item. u4 */
-    private long annotationsOff;
-    /* file offset to class_data_item. u4 */
-    private long classDataOff;
-    /* file offset to DexEncodedArray. u4 */
-    private long staticValuesOff;
-
     public static int ACC_PUBLIC = 0x1;
     public static int ACC_PRIVATE = 0x2;
     public static int ACC_PROTECTED = 0x4;
@@ -42,7 +23,21 @@ public class DexClassStruct {
     public static int ACC_ENUM = 0x4000;
     public static int ACC_CONSTRUCTOR = 0x10000;
     public static int ACC_DECLARED_SYNCHRONIZED = 0x20000;
-
+    /* index into typeIds for this class. u4 */
+    private int classIdx;
+    private int accessFlags;
+    /* index into typeIds for superclass. u4 */
+    private int superclassIdx;
+    /* file offset to DexTypeList. u4 */
+    private long interfacesOff;
+    /* index into stringIds for source file name. u4 */
+    private int sourceFileIdx;
+    /* file offset to annotations_directory_item. u4 */
+    private long annotationsOff;
+    /* file offset to class_data_item. u4 */
+    private long classDataOff;
+    /* file offset to DexEncodedArray. u4 */
+    private long staticValuesOff;
 
     public int getClassIdx() {
         return classIdx;

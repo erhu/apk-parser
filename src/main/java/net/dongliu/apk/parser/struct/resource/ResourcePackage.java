@@ -1,11 +1,11 @@
 package net.dongliu.apk.parser.struct.resource;
 
-import net.dongliu.apk.parser.struct.StringPool;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.dongliu.apk.parser.struct.StringPool;
 
 /**
  * Resource packge.
@@ -20,15 +20,13 @@ public class ResourcePackage {
     private StringPool typeStringPool;
     //  contains the names (keys) of the Resources defined in the ResourcePackage.
     private StringPool keyStringPool;
+    private Map<Short, TypeSpec> typeSpecMap = new HashMap<>();
+    private Map<Short, List<Type>> typesMap = new HashMap<>();
 
     public ResourcePackage(PackageHeader header) {
         this.name = header.getName();
         this.id = (short) header.getId();
     }
-
-    private Map<Short, TypeSpec> typeSpecMap = new HashMap<>();
-
-    private Map<Short, List<Type>> typesMap = new HashMap<>();
 
     public void addTypeSpec(TypeSpec typeSpec) {
         this.typeSpecMap.put(typeSpec.getId(), typeSpec);

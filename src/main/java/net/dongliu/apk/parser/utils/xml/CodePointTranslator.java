@@ -20,13 +20,13 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * Helper subclass to CharSequenceTranslator to allow for translations that 
+ * Helper subclass to CharSequenceTranslator to allow for translations that
  * will replace up to one character at a time.
  */
 abstract class CodePointTranslator extends CharSequenceTranslator {
 
     /**
-     * Implementation of translate that maps onto the abstract translate(int, Writer) method. 
+     * Implementation of translate that maps onto the abstract translate(int, Writer) method.
      * {@inheritDoc}
      */
     @Override
@@ -37,10 +37,10 @@ abstract class CodePointTranslator extends CharSequenceTranslator {
     }
 
     /**
-     * Translate the specified codepoint into another. 
+     * Translate the specified codepoint into another.
      *
      * @param codepoint int character input to translate
-     * @param out Writer to optionally push the translated output to
+     * @param out       Writer to optionally push the translated output to
      * @return boolean as to whether translation occurred or not
      * @throws IOException if and only if the Writer produces an IOException
      */

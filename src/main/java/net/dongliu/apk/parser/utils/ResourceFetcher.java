@@ -1,12 +1,5 @@
 package net.dongliu.apk.parser.utils;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -16,6 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * fetch dependency resource file from android source
@@ -23,6 +23,13 @@ import java.util.regex.Pattern;
  * @author Liu Dong im@dongliu.net
  */
 public class ResourceFetcher {
+
+    public static void main(String[] args)
+            throws ParserConfigurationException, SAXException, IOException {
+        ResourceFetcher fetcher = new ResourceFetcher();
+        fetcher.fetchSystemAttrIds();
+        //fetcher.fetchSystemStyle();
+    }
 
     // from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/public.xml
     private void fetchSystemAttrIds()
@@ -35,6 +42,11 @@ public class ResourceFetcher {
             parseAttributeXml(xml);
         }
     }
+
+
+    // the android system r style.
+    // see http://developer.android.com/reference/android/R.style.html
+    // from https://android.googlesource.com/platform/frameworks/base/+/master/api/current.txt r.style section
 
     private void parseAttributeXml(String xml)
             throws IOException, ParserConfigurationException, SAXException {
@@ -72,11 +84,6 @@ public class ResourceFetcher {
             System.out.println(String.format("%s=%d", pair.getRight(), pair.getLeft()));
         }
     }
-
-
-    // the android system r style.
-    // see http://developer.android.com/reference/android/R.style.html
-    // from https://android.googlesource.com/platform/frameworks/base/+/master/api/current.txt r.style section
 
     private void fetchSystemStyle() throws IOException {
         String url = "https://android.googlesource.com/platform/frameworks/base/+/master/api/current.txt";
@@ -118,12 +125,5 @@ public class ResourceFetcher {
         } else {
             return null;
         }
-    }
-
-    public static void main(String[] args)
-            throws ParserConfigurationException, SAXException, IOException {
-        ResourceFetcher fetcher = new ResourceFetcher();
-        fetcher.fetchSystemAttrIds();
-        //fetcher.fetchSystemStyle();
     }
 }

@@ -1,15 +1,15 @@
 package net.dongliu.apk.parser.parser;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 import net.dongliu.apk.parser.bean.DexClass;
 import net.dongliu.apk.parser.exception.ParserException;
 import net.dongliu.apk.parser.struct.StringPool;
 import net.dongliu.apk.parser.struct.dex.DexClassStruct;
 import net.dongliu.apk.parser.struct.dex.DexHeader;
 import net.dongliu.apk.parser.utils.Buffers;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 /**
  * parse dex file.
@@ -22,11 +22,9 @@ import java.nio.ByteOrder;
  */
 public class DexParser {
 
+    private static final int NO_INDEX = 0xffffffff;
     private ByteBuffer buffer;
     private ByteOrder byteOrder = ByteOrder.LITTLE_ENDIAN;
-
-    private static final int NO_INDEX = 0xffffffff;
-
     private DexClass[] dexClasses;
 
     public DexParser(ByteBuffer buffer) {

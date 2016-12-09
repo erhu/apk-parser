@@ -1,8 +1,8 @@
 package net.dongliu.apk.parser.bean;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /**
  * @author dongliu

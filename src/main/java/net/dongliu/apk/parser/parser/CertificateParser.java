@@ -1,8 +1,5 @@
 package net.dongliu.apk.parser.parser;
 
-import net.dongliu.apk.parser.bean.CertificateMeta;
-import sun.security.pkcs.PKCS7;
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +10,9 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.dongliu.apk.parser.bean.CertificateMeta;
+import sun.security.pkcs.PKCS7;
 
 /**
  * parser certificate info.
@@ -27,7 +27,7 @@ public class CertificateParser {
     private List<CertificateMeta> certificateMetas;
 
     public CertificateParser(byte[] data) {
-        this.data =data;
+        this.data = data;
     }
 
     /**

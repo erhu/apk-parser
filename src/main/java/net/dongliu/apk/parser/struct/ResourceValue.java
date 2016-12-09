@@ -1,9 +1,9 @@
 package net.dongliu.apk.parser.struct;
 
+import java.util.Locale;
+
 import net.dongliu.apk.parser.struct.resource.ResourceTable;
 import net.dongliu.apk.parser.utils.ParseUtils;
-
-import java.util.Locale;
 
 /**
  * Resource entity, may be one entry in resource table, or string value
@@ -17,11 +17,6 @@ public abstract class ResourceValue {
     protected ResourceValue(int value) {
         this.value = value;
     }
-
-    /**
-     * get value as string
-     */
-    public abstract String toStringValue(ResourceTable resourceTable, Locale locale);
 
     public static ResourceValue decimal(int value) {
         return new DecimalResourceValue(value);
@@ -63,6 +58,10 @@ public abstract class ResourceValue {
         return new RawValue(value, type);
     }
 
+    /**
+     * get value as string
+     */
+    public abstract String toStringValue(ResourceTable resourceTable, Locale locale);
 
     private static class DecimalResourceValue extends ResourceValue {
 

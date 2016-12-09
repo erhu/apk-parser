@@ -5,14 +5,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class Utils {
 
     public static byte[] toByteArray(InputStream in) throws IOException {
         try {
-            byte[] buf = new byte[1024*8];
+            byte[] buf = new byte[1024 * 8];
             try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
                 int len;
                 while ((len = in.read(buf)) != -1) {

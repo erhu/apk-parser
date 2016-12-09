@@ -1,20 +1,11 @@
 package net.dongliu.apk.parser.utils.xml;
 
-import net.dongliu.apk.parser.utils.*;
-
 /**
  * Utils method to escape xml string, copied from apache commons lang3
  *
  * @author Liu Dong {@literal <im@dongliu.net>}
  */
 public class XmlEscaper {
-
-    /**
-     * <p>Escapes the characters in a {@code String} using XML entities.</p>
-     */
-    public static String escapeXml10(final String input) {
-        return ESCAPE_XML10.translate(input);
-    }
 
     public static final CharSequenceTranslator ESCAPE_XML10 =
             new AggregateTranslator(
@@ -58,4 +49,11 @@ public class XmlEscaper {
                     NumericEntityEscaper.between(0x86, 0x9f),
                     new UnicodeUnpairedSurrogateRemover()
             );
+
+    /**
+     * <p>Escapes the characters in a {@code String} using XML entities.</p>
+     */
+    public static String escapeXml10(final String input) {
+        return ESCAPE_XML10.translate(input);
+    }
 }

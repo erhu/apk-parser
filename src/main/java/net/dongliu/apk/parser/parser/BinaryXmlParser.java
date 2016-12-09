@@ -1,21 +1,35 @@
 package net.dongliu.apk.parser.parser;
 
-import net.dongliu.apk.parser.bean.AttributeValues;
-import net.dongliu.apk.parser.bean.Locales;
-import net.dongliu.apk.parser.exception.ParserException;
-import net.dongliu.apk.parser.struct.*;
-import net.dongliu.apk.parser.struct.resource.ResourceTable;
-import net.dongliu.apk.parser.struct.xml.*;
-import net.dongliu.apk.parser.utils.Buffers;
-import net.dongliu.apk.parser.utils.ParseUtils;
-import net.dongliu.apk.parser.utils.Utils;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+
+import net.dongliu.apk.parser.bean.AttributeValues;
+import net.dongliu.apk.parser.bean.Locales;
+import net.dongliu.apk.parser.exception.ParserException;
+import net.dongliu.apk.parser.struct.ChunkHeader;
+import net.dongliu.apk.parser.struct.ChunkType;
+import net.dongliu.apk.parser.struct.ResourceValue;
+import net.dongliu.apk.parser.struct.StringPool;
+import net.dongliu.apk.parser.struct.StringPoolHeader;
+import net.dongliu.apk.parser.struct.resource.ResourceTable;
+import net.dongliu.apk.parser.struct.xml.Attribute;
+import net.dongliu.apk.parser.struct.xml.Attributes;
+import net.dongliu.apk.parser.struct.xml.NullHeader;
+import net.dongliu.apk.parser.struct.xml.XmlCData;
+import net.dongliu.apk.parser.struct.xml.XmlHeader;
+import net.dongliu.apk.parser.struct.xml.XmlNamespaceEndTag;
+import net.dongliu.apk.parser.struct.xml.XmlNamespaceStartTag;
+import net.dongliu.apk.parser.struct.xml.XmlNodeEndTag;
+import net.dongliu.apk.parser.struct.xml.XmlNodeHeader;
+import net.dongliu.apk.parser.struct.xml.XmlNodeStartTag;
+import net.dongliu.apk.parser.struct.xml.XmlResourceMapHeader;
+import net.dongliu.apk.parser.utils.Buffers;
+import net.dongliu.apk.parser.utils.ParseUtils;
+import net.dongliu.apk.parser.utils.Utils;
 
 /**
  * Android Binary XML format
@@ -25,6 +39,10 @@ import java.util.Set;
  */
 public class BinaryXmlParser {
 
+    private static final Set<String> intAttributes = new HashSet<>(
+            Arrays.asList("screenOrientation", "configChanges", "windowSoftInputMode",
+                    "launchMode", "installLocation", "protectionLevel"));
+    private final ResourceTable resourceTable;
     /**
      * By default the data buffer Chunks is buffer little-endian byte order both at runtime and when stored buffer
      * files.
@@ -35,7 +53,6 @@ public class BinaryXmlParser {
     private String[] resourceMap;
     private ByteBuffer buffer;
     private XmlStreamer xmlStreamer;
-    private final ResourceTable resourceTable;
     /**
      * default locale.
      */
@@ -192,10 +209,6 @@ public class BinaryXmlParser {
         return xmlNodeStartTag;
     }
 
-    private static final Set<String> intAttributes = new HashSet<>(
-            Arrays.asList("screenOrientation", "configChanges", "windowSoftInputMode",
-                    "launchMode", "installLocation", "protectionLevel"));
-
     //trans int attr value to string
     private String getFinalValueAsString(String attributeName, String str) {
         int value = Integer.parseInt(str);
@@ -321,14 +334,14 @@ public class BinaryXmlParser {
         }
     }
 
+    public Locale getLocale() {
+        return locale;
+    }
+
     public void setLocale(Locale locale) {
         if (locale != null) {
             this.locale = locale;
         }
-    }
-
-    public Locale getLocale() {
-        return locale;
     }
 
     public XmlStreamer getXmlStreamer() {

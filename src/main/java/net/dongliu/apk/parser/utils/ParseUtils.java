@@ -1,16 +1,24 @@
 package net.dongliu.apk.parser.utils;
 
-import net.dongliu.apk.parser.bean.Locales;
-import net.dongliu.apk.parser.exception.ParserException;
-import net.dongliu.apk.parser.parser.StringPoolEntry;
-import net.dongliu.apk.parser.struct.*;
-import net.dongliu.apk.parser.struct.resource.*;
-
-import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Locale;
+import javax.annotation.Nullable;
+
+import net.dongliu.apk.parser.bean.Locales;
+import net.dongliu.apk.parser.exception.ParserException;
+import net.dongliu.apk.parser.parser.StringPoolEntry;
+import net.dongliu.apk.parser.struct.AndroidConstants;
+import net.dongliu.apk.parser.struct.ResValue;
+import net.dongliu.apk.parser.struct.ResourceValue;
+import net.dongliu.apk.parser.struct.StringPool;
+import net.dongliu.apk.parser.struct.StringPoolHeader;
+import net.dongliu.apk.parser.struct.resource.ResourceEntry;
+import net.dongliu.apk.parser.struct.resource.ResourcePackage;
+import net.dongliu.apk.parser.struct.resource.ResourceTable;
+import net.dongliu.apk.parser.struct.resource.Type;
+import net.dongliu.apk.parser.struct.resource.TypeSpec;
 
 /**
  * @author dongliu

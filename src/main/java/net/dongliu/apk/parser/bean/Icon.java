@@ -1,7 +1,5 @@
 package net.dongliu.apk.parser.bean;
 
-import java.util.Arrays;
-
 /**
  * The apk icon file path, and data
  *
